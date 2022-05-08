@@ -1,0 +1,13 @@
+{
+        "token": "",
+        "picoToken": "",
+        "PSID": "",    
+        "PAPISID": "",
+        "wakeWord": "",
+        "libporqupinePath": "",
+        "speechNetwork": "vosk-eng-huge",
+        "libvoskPath": "",
+        "audioFrameSizeMs": "20",
+        "defaultAudioVolume": 75,
+        "listenTimeoutMs": 8000
+}
