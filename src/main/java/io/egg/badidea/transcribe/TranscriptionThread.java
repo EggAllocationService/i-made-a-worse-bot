@@ -37,6 +37,7 @@ public class TranscriptionThread extends Thread {
     public static byte[] failNoise;
     public Recognizer voskRecognizer;
     public static final int[] SILENCE = new int[320];
+
     public TranscriptionThread() throws IOException {
         super("Transcription Thread");
         vad = new WebRTCVad(16000, 2);
@@ -89,7 +90,7 @@ public class TranscriptionThread extends Thread {
                     stream.read(s);
                     System.arraycopy(s, 0, recordBuffer, index, 320);// 320 - 20ms at 16khz mono
                     index += 320;
-                    //voskRecognizer.acceptWaveForm(s, s.length);
+                    // voskRecognizer.acceptWaveForm(s, s.length);
                     int[] forVad = shortToInt(s);
                     boolean isVoice = vad.isSpeech(forVad);
 
@@ -99,7 +100,6 @@ public class TranscriptionThread extends Thread {
                         silentTime = 0;
                     }
                 }
-                
 
                 if (silentTime > 1300) {
                     transcriptionFinished();
@@ -107,7 +107,7 @@ public class TranscriptionThread extends Thread {
                 transcriptionTime += 20;
 
             }
-            
+
         }
     }
 
@@ -132,7 +132,7 @@ public class TranscriptionThread extends Thread {
         silentTime = 0;
         var u = transcribeFromUser;
         transcribeFromUser = null;
-    
+
         AudioMixer.notificationSink.push(TranscriptionThread.ackNoise);
         short[] data = new short[index];
         System.arraycopy(recordBuffer, 0, data, 0, index);
@@ -144,15 +144,17 @@ public class TranscriptionThread extends Thread {
         Member resolved = null;
         List<User> audioUsers;
         for (AudioManager a : Main.bot.getAudioManagers()) {
-             audioUsers = a.getConnectedChannel().getMembers().stream()
-                                            .map(c -> c.getUser())
-                                            .collect(Collectors.toList());
+            if (a.getConnectedChannel() == null) continue;
+            audioUsers = a.getConnectedChannel().getMembers().stream()
+                    .map(c -> c.getUser())
+                    .collect(Collectors.toList());
             if (audioUsers.contains(u)) {
                 resolved = a.getGuild().getMember(u);
                 break;
             }
-            
-        };
+
+        }
+        ;
         if (resolved == null) {
             System.out.println("WARN: Could not find guild for member " + u.getAsTag());
         }
@@ -160,8 +162,9 @@ public class TranscriptionThread extends Thread {
         AudioMixer.stopListening();
         CommandHandler.handleCommand(b.text, resolved);
     }
+
     public class Bullshit {
         public String text;
     }
-    
+
 }
