@@ -37,7 +37,8 @@ public class TranscriptionThread extends Thread {
     public static byte[] failNoise;
     public Recognizer voskRecognizer;
     public static final int[] SILENCE = new int[320];
-
+    public boolean started = false;
+    public int startCount = 0;
     public TranscriptionThread() throws IOException {
         super("Transcription Thread");
         vad = new WebRTCVad(16000, 2);
@@ -84,7 +85,7 @@ public class TranscriptionThread extends Thread {
                 short[] s = new short[320];
                 if (!stream.canProvideLenBytes(320)) {
 
-                    silentTime += 20;
+                    if (started) silentTime += 18;
                     vad.isSpeech(SILENCE);
                 } else {
                     stream.read(s);
@@ -97,11 +98,16 @@ public class TranscriptionThread extends Thread {
                     if (!isVoice) {
                         silentTime += 20;
                     } else {
-                        silentTime = 0;
+                        startCount += 1;
+                        if (startCount > 10) {
+                            started = true;
+                        }
+                        silentTime -= 100;
+                        if (silentTime < 0) silentTime = 0;
                     }
                 }
 
-                if (silentTime > 1300) {
+                if (silentTime > Main.config.silentTimeMs) {
                     transcriptionFinished();
                 }
                 transcriptionTime += 20;
@@ -124,6 +130,8 @@ public class TranscriptionThread extends Thread {
         index = 0;
         transcriptionTime = 0;
         silentTime = 0;
+        startCount = 0;
+        started = false;
     }
 
     public void transcriptionFinished() {
@@ -132,7 +140,8 @@ public class TranscriptionThread extends Thread {
         silentTime = 0;
         var u = transcribeFromUser;
         transcribeFromUser = null;
-
+        started = false;
+        startCount = 0;
         AudioMixer.notificationSink.push(TranscriptionThread.ackNoise);
         short[] data = new short[index];
         System.arraycopy(recordBuffer, 0, data, 0, index);

@@ -11,4 +11,5 @@ public class ConfigFile {
     public String libvoskPath;
     public int defaultAudioVolume;
     public int listenTimeoutMs;
+    public int silentTimeMs;
 }

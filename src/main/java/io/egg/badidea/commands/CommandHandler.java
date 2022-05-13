@@ -4,7 +4,6 @@ package io.egg.badidea.commands;
 import io.egg.badidea.Main;
 import io.egg.badidea.mixing.AudioMixer;
 import io.egg.badidea.transcribe.TranscriptionThread;
-import io.egg.badidea.wakeWordHandler.WakeWordThread;
 import net.dv8tion.jda.api.entities.Member;
 
 public class CommandHandler {
@@ -16,7 +15,7 @@ public class CommandHandler {
             var text = String.join(" ", tmp);
             System.out.println("searching youtube for " + text);
             Main.audioManager.loadItem("ytmsearch: " + text , new LoadHandler());
-        } else if (in.startsWith("stop") || in == "pop" || in == "thought" || in.equals("shut up")) {
+        } else if (in.startsWith("stop") || in == "pop" || in == "thought" || in.equals("shut up") || in.equals("shut the fuck up")) {
             AudioMixer.trackScheduler.stop();
             AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
         } else if (in.startsWith("skip") || in.startsWith("next song") || in.startsWith("next some") || in == "next") {

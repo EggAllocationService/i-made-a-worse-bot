@@ -9,5 +9,6 @@
         "libvoskPath": "",
         "audioFrameSizeMs": "20",
         "defaultAudioVolume": 75,
-        "listenTimeoutMs": 8000
+        "listenTimeoutMs": 8000,
+        "silentTimeMs": 1200
 }
