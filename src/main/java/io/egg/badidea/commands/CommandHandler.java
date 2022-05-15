@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.Member;
 
 public class CommandHandler {
     public static void handleCommand(String in, Member from) {
-        if (in.startsWith("play") || in.startsWith("plane") || in.startsWith("place") || in.startsWith("queue") || in.startsWith("clay") || in.startsWith("plate")) {
+        if (in.startsWith("play") || in.startsWith("lay") || in.startsWith("clay") || in.startsWith("queue") || in.startsWith("clay") || in.startsWith("plate")) {
             AudioMixer.notificationSink.push(TranscriptionThread.ackNoise);
             var tmp = in.split(" ");
             tmp[0] = "";

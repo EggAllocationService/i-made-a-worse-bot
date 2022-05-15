@@ -30,6 +30,7 @@ public class MicInputStream extends InputStream {
             short[] tmp = new short[writePos + (b.length * 2)];
             System.arraycopy(buffer, 0, tmp, 0, writePos);
             System.out.println("WARN: Had to extend buffer from " + buffer.length + " to " + tmp.length);
+            System.out.println("WARN: Maybe a consumer thread is hung?");
             buffer = tmp;
             
         }
