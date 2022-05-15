@@ -3,7 +3,7 @@ package io.egg.badidea.mixing;
 import io.egg.badidea.speakerHandler.SpeakerThread;
 
 public class AudioSink {
-    byte[] buffer = new byte[48000 * 2 * 2 * 5];
+    byte[] buffer = new byte[48000 * 2 * 2 * 10]; // 48khz ( 2 bytes per short) * 2 channels * 10 seconds
     int writePos = 0;
 
     public void push(byte[] audio) {
