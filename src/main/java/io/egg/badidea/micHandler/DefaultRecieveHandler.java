@@ -2,7 +2,10 @@ package io.egg.badidea.micHandler;
 
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.sound.sampled.AudioInputStream;
 
 import io.egg.badidea.protocol.MicInputStream;
 import io.egg.badidea.speakerHandler.SpeakerThread;
@@ -13,7 +16,8 @@ import net.dv8tion.jda.api.entities.User;
 public class DefaultRecieveHandler implements AudioReceiveHandler {
     public static final byte[] SILENCE = new byte[SpeakerThread.LEN_AUDIO_BYTES];
     public static HashMap<User, MicInputStream> audioStreams = new HashMap<>();
-
+    public static ArrayList<LockWait> lockWaits = new ArrayList<>();
+    static boolean locked = false;
     public DefaultRecieveHandler() {
 
     }
@@ -24,25 +28,67 @@ public class DefaultRecieveHandler implements AudioReceiveHandler {
     }
     @Override
     public void handleUserAudio(UserAudio a) {
+        MicInputStream m;
         if (a.getUser() == null)
             return;
         User u = a.getUser();
         byte[] o = a.getAudioData(0.8f);
         byte[] resampled = shittyResample(o);
         if (!audioStreams.containsKey(u)) {
-            audioStreams.put(u, new MicInputStream());
+            m = new MicInputStream();
+            if (!locked) {
+                audioStreams.put(u, m);
+            } else {
+                lockWaits.add(new LockWait(u, m)); 
+            }
 
+        } else {
+            m = audioStreams.get(u);
         }
 
-        audioStreams.get(u).write(resampled);
+        m.write(resampled);
 
+    }
+    public static void lock() {
+        locked = true;
+    }
+    public static void unlock() {
+        locked = false;
+        for (LockWait u : lockWaits) {
+            if (!u.remove) {
+                audioStreams.put(u.user, u.stream);
+            } else {
+                audioStreams.remove(u.user);
+            }
+        }
+        lockWaits.clear();
+    }
+    public static void remove(User u) {
+        if (locked) {
+            lockWaits.add(new LockWait(u));
+        } else {
+            audioStreams.remove(u);
+        }
     }
 
     @Override
     public boolean canReceiveUser() {
         return true;
     }
-
+    static class LockWait {
+        public User user;
+        public MicInputStream stream;
+        public boolean remove = false;
+        public LockWait(User u, MicInputStream s) {
+            user = u;
+            stream = s;
+        }
+        public LockWait(User u) {
+            remove = true;
+            user = u;
+            stream = null;
+        }
+    }
     public byte[] shittyResample(byte[] data) {
         ByteBuffer in = ByteBuffer.wrap(data);
         ByteBuffer out = ByteBuffer.allocate((int) Math.ceil((data.length / 2) / 3));
