@@ -50,6 +50,7 @@ public class WakeWordThread extends Thread {
                         
                         Porcupine userPq = wakeWordMap.get(u);
                         MicInputStream stream = DefaultRecieveHandler.audioStreams.get(u);
+                        if (userPq == null) return;
                         if (!stream.canProvideLenBytes(userPq.getFrameLength())) {
                             return;
                         }
@@ -90,7 +91,6 @@ public class WakeWordThread extends Thread {
                     var tdelta = (long) (19 - Math.floor(diff));
                     if (tdelta < 0) {
                         System.out.println("WARN: Can't keep up! Running " + (tdelta * -1) + "ms behind" );
-                        Thread.sleep(18);
                     } else {
                         Thread.sleep(tdelta);
                     }
@@ -110,6 +110,14 @@ public class WakeWordThread extends Thread {
     public static void userDisconnect(User u) {
         if (!wakeWordMap.containsKey(u))
             return;
+        while (DefaultRecieveHandler.locked) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         wakeWordMap.get(u).delete();
         wakeWordMap.remove(u);
         DefaultRecieveHandler.remove(u);

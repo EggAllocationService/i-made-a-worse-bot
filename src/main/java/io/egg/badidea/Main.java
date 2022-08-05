@@ -23,6 +23,7 @@ import io.egg.badidea.transcribe.TranscriptionThread;
 import io.egg.badidea.wakeWordHandler.WakeWordThread;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -54,11 +55,13 @@ public class Main {
         YoutubeHttpContextFilter.setPSID(config.PSID);
         AudioMixer.audioPlayer.setVolume(config.defaultAudioVolume);
         transcriptionThread.start();
+        
         bot = JDABuilder.createDefault(config.token)
                 .addEventListeners(new MainEventHandler())
                 .setEnabledIntents(EnumSet.allOf(GatewayIntent.class))
                 .enableCache(CacheFlag.VOICE_STATE)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .setActivity(Activity.playing("League of Legends"))
                 .build();
 
     }

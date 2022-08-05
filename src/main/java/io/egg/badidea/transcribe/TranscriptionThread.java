@@ -1,9 +1,14 @@
 package io.egg.badidea.transcribe;
 
+import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -145,8 +150,27 @@ public class TranscriptionThread extends Thread {
         AudioMixer.notificationSink.push(TranscriptionThread.ackNoise);
         short[] data = new short[index];
         System.arraycopy(recordBuffer, 0, data, 0, index);
+      
+      /*   try {
+            OutputStream stream;
+            if (new File("recorded.pcm").exists()) {
+                stream = Files.newOutputStream(Path.of("recorded.pcm"), StandardOpenOption.TRUNCATE_EXISTING);
+            } else {
+                stream = Files.newOutputStream(Path.of("recorded.pcm"), StandardOpenOption.CREATE);
+            }
+            var datastream = new DataOutputStream(stream);
+            for (short s : data) {
+                datastream.writeShort(s);
+            }  
+            datastream.flush();
+            datastream.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
         index = 0;
         System.out.println(voskRecognizer.acceptWaveForm(data, data.length));
+        
         String s = voskRecognizer.getFinalResult();
         Bullshit b = g.fromJson(s, Bullshit.class);
         voskRecognizer.reset();

@@ -17,7 +17,7 @@ public class DefaultRecieveHandler implements AudioReceiveHandler {
     public static final byte[] SILENCE = new byte[SpeakerThread.LEN_AUDIO_BYTES];
     public static HashMap<User, MicInputStream> audioStreams = new HashMap<>();
     public static ArrayList<LockWait> lockWaits = new ArrayList<>();
-    static boolean locked = false;
+    public static boolean locked = false;
     public DefaultRecieveHandler() {
 
     }

@@ -5,6 +5,9 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
+import io.egg.badidea.Main;
+import net.dv8tion.jda.api.entities.Activity;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -34,6 +37,8 @@ public class TrackScheduler extends AudioEventAdapter {
     // track goes to the queue instead.
     if (!player.startTrack(track, true)) {
       queue.offer(track);
+    } else {
+      Main.bot.getPresence().setActivity(Activity.listening(track.getInfo().title));
     }
   }
 
@@ -43,7 +48,13 @@ public class TrackScheduler extends AudioEventAdapter {
   public void nextTrack() {
     // Start the next track, regardless of if something is already playing or not. In case queue was empty, we are
     // giving null to startTrack, which is a valid argument and will simply stop the player.
-    player.startTrack(queue.poll(), false);
+    var t = queue.poll();
+    player.startTrack(t, false);
+    if (t != null) {
+      Main.bot.getPresence().setActivity(Activity.listening(t.getInfo().title));
+    } else {
+      Main.bot.getPresence().setActivity(Activity.playing("League of Legends"));
+    }
   }
 
   @Override
