@@ -29,7 +29,7 @@ public class DefaultRecieveHandler implements AudioReceiveHandler {
     @Override
     public void handleUserAudio(UserAudio a) {
         MicInputStream m;
-        if (a.getUser() == null)
+        if (a.getUser() == null || a.getUser().isBot())
             return;
         User u = a.getUser();
         byte[] o = a.getAudioData(0.8f);

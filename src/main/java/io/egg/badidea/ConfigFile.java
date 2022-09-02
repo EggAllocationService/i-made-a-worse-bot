@@ -8,8 +8,9 @@ public class ConfigFile {
     public String wakeWord;
     public String libporcupinePath;
     public String speechNetwork;
-    public String libvoskPath;
+    public String guildId;
     public int defaultAudioVolume;
     public int listenTimeoutMs;
     public int silentTimeMs;
+
 }

@@ -1,5 +1,7 @@
 package io.egg.badidea.commands;
 
+import java.util.function.Consumer;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
@@ -9,12 +11,15 @@ import io.egg.badidea.mixing.AudioMixer;
 import io.egg.badidea.transcribe.TranscriptionThread;
 
 public class LoadHandler implements AudioLoadResultHandler {
-
+    Consumer<AudioTrack> handler;
+    public LoadHandler(Consumer<AudioTrack> loadHandler) {
+        handler = loadHandler;
+    }
     @Override
     public void trackLoaded(AudioTrack track) {
         AudioMixer.trackScheduler.queue(track);
         System.out.println("Queued " + track.getInfo().title);
-        AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
+        handler.accept(track);
     }
 
     @Override
@@ -24,17 +29,17 @@ public class LoadHandler implements AudioLoadResultHandler {
         if (firstTrack == null) {
           firstTrack = playlist.getTracks().get(0);
         }
-
+        
         AudioMixer.trackScheduler.queue(firstTrack);
         System.out.println("Queued " + firstTrack.getInfo().title);
-        AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
+        handler.accept(firstTrack);
         
     }
 
     @Override
     public void noMatches() {
         
-        System.out.println("no matches");
+        handler.accept(null);
     }
 
     @Override

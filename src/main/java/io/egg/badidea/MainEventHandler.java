@@ -1,12 +1,14 @@
 package io.egg.badidea;
 
 import io.egg.badidea.micHandler.DefaultRecieveHandler;
+import io.egg.badidea.mixing.AudioMixer;
 import io.egg.badidea.speakerHandler.SpeakerSendHandler;
 import io.egg.badidea.wakeWordHandler.WakeWordThread;
 import net.dv8tion.jda.api.audio.hooks.ConnectionStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
 
@@ -30,7 +32,10 @@ public class MainEventHandler extends ListenerAdapter {
             AudioManager a = e.getGuild().getAudioManager();
             if (a.isConnected() && a.getConnectedChannel() == e.getChannelLeft()) {
                 if (e.getChannelLeft().getMembers().size() == 1) {
-                    Main.bot.getPresence().setActivity(Activity.playing("League of Legends"));
+                    Main.bot.getPresence().setActivity(null);
+                    if (AudioMixer.audioPlayer.getPlayingTrack() != null) {
+                        AudioMixer.trackScheduler.stop();
+                    }
                     a.closeAudioConnection();
                 }
             }
@@ -40,5 +45,10 @@ public class MainEventHandler extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent e) {
         System.out.println("Bot is ready!");
+        CommandManager.build();
+    }
+    @Override
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent e) {
+        CommandManager.handleSlashCommand(e);
     }
 }

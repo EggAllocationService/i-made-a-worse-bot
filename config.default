@@ -6,7 +6,7 @@
         "wakeWord": "",
         "libporqupinePath": "",
         "speechNetwork": "vosk-eng-huge",
-        "libvoskPath": "",
+        "guildId": "",
         "audioFrameSizeMs": "20",
         "defaultAudioVolume": 75,
         "listenTimeoutMs": 8000,

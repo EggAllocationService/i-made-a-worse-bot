@@ -18,8 +18,8 @@ import org.jitsi.webrtcvadwrapper.WebRTCVad;
 import org.vosk.Model;
 import org.vosk.Recognizer;
 
+import io.egg.badidea.CommandManager;
 import io.egg.badidea.Main;
-import io.egg.badidea.commands.CommandHandler;
 import io.egg.badidea.micHandler.DefaultRecieveHandler;
 import io.egg.badidea.mixing.AudioMixer;
 import io.egg.badidea.protocol.MicInputStream;
@@ -193,7 +193,7 @@ public class TranscriptionThread extends Thread {
         }
         System.out.println(s);
         AudioMixer.stopListening();
-        CommandHandler.handleCommand(b.text, resolved);
+        CommandManager.handleVoiceCommand(b.text, resolved);
     }
 
     public class Bullshit {

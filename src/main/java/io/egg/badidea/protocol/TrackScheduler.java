@@ -53,7 +53,7 @@ public class TrackScheduler extends AudioEventAdapter {
     if (t != null) {
       Main.bot.getPresence().setActivity(Activity.listening(t.getInfo().title));
     } else {
-      Main.bot.getPresence().setActivity(Activity.playing("League of Legends"));
+      Main.bot.getPresence().setActivity(null);
     }
   }
 
@@ -62,6 +62,8 @@ public class TrackScheduler extends AudioEventAdapter {
     // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)
     if (endReason.mayStartNext) {
       nextTrack();
+    } else {
+      Main.bot.getPresence().setActivity(null);
     }
   }
   public void stop() {

@@ -15,6 +15,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeHttpContextFilter;
 
 import ai.picovoice.porcupine.PorcupineException;
+import io.egg.badidea.commands.*;
 import io.egg.badidea.micHandler.MicThread;
 import io.egg.badidea.mixing.AudioMixer;
 import io.egg.badidea.protocol.TrackScheduler;
@@ -55,15 +56,20 @@ public class Main {
         YoutubeHttpContextFilter.setPSID(config.PSID);
         AudioMixer.audioPlayer.setVolume(config.defaultAudioVolume);
         transcriptionThread.start();
-        
+
+        CommandManager.registerCommand(new PlayCommand());
+        CommandManager.registerCommand(new StopCommand());
+        CommandManager.registerCommand(new SkipCommand());
+        CommandManager.registerCommand(new TranscribeCommand());
+
         bot = JDABuilder.createDefault(config.token)
                 .addEventListeners(new MainEventHandler())
                 .setEnabledIntents(EnumSet.allOf(GatewayIntent.class))
                 .enableCache(CacheFlag.VOICE_STATE)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
-                .setActivity(Activity.playing("League of Legends"))
+                .setActivity(null)
                 .build();
-
+        
     }
 
     public static byte[] stripWavHeader(byte[] wav) {
