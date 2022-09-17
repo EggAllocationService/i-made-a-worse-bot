@@ -7,6 +7,7 @@
         "libporqupinePath": "",
         "speechNetwork": "vosk-eng-huge",
         "guildId": "",
+        "mimicUrl": "http://127.0.0.1:59125/api/tts?noiseScale=0.667&noiseW=0.6&lengthScale=1.2",
         "audioFrameSizeMs": "20",
         "defaultAudioVolume": 75,
         "listenTimeoutMs": 8000,

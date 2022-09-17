@@ -7,6 +7,9 @@ import io.egg.badidea.BaseCommand;
 import io.egg.badidea.Main;
 import io.egg.badidea.mixing.AudioMixer;
 import io.egg.badidea.transcribe.TranscriptionThread;
+import io.egg.badidea.tts.TtsJob;
+import io.egg.badidea.tts.TtsPlayerHandler;
+import io.egg.badidea.tts.TtsThread;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -32,7 +35,7 @@ public class PlayCommand extends BaseCommand {
     }
     @Override
     public boolean shouldHandleVoiceCommand(String in, Member from) {
-        if (in.startsWith("play") || in.startsWith("lay") || in.startsWith("clay") || in.startsWith("queue") || in.startsWith("place") || in.startsWith("plate") || in.startsWith("plain")) {
+        if (in.startsWith("play") || in.startsWith("lay") || in.startsWith("clay") || in.startsWith("queue") || in.startsWith("place") || in.startsWith("plate") || in.startsWith("plain") || in.startsWith("flay")) {
             return true;
         } else if (in.equals("who was in paris") || in.equals("who is in paris") || in.equals("who's in paris")) {
             return true;
@@ -59,7 +62,18 @@ public class PlayCommand extends BaseCommand {
             text = text.replace("on youtube", "");
         }
         System.out.println("searching youtube for " + text);
-        Main.audioManager.loadItem(start + text , new LoadHandler(c -> AudioMixer.notificationSink.push(TranscriptionThread.successNoise)));
+        Main.audioManager.loadItem(start + text , new LoadHandler(c -> {
+            var name = c.getInfo().title;
+            var author = c.getInfo().author;
+            AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
+           /*  if (AudioMixer.trackScheduler.queue.size() == 0) {
+                // meaning nothing was added to queue
+               String speech = random("alright", "okay", "sure") + ", playing " + name + " by " + author + ".";
+                TtsThread.submitJob(new TtsJob(speech, new TtsPlayerHandler()));
+            } else {
+                AudioMixer.notificationSink.push(TranscriptionThread.successNoise)
+            }*/
+        }));
     }
     @Override
     public void handleSlashCommand(SlashCommandInteractionEvent event) {

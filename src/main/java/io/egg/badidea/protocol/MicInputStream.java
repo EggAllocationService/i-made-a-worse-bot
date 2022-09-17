@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioFormat.Encoding;
+
 import io.egg.badidea.speakerHandler.SpeakerThread;
 
 public class MicInputStream extends InputStream {
@@ -12,10 +16,12 @@ public class MicInputStream extends InputStream {
     public short[] buffer = new short[SpeakerThread.LEN_AUDIO_BYTES * 3];
     public int writePos = 0;
     public int expectedLen = 512;
+    
 
     @Override
     public int read() throws IOException {
         return (int) buffer[0];
+        
     }
     public MicInputStream() {
         super();
@@ -48,7 +54,13 @@ public class MicInputStream extends InputStream {
     public int available() {
         return writePos;
     }
+    public short[] getAll() {
+        short[] b = new short[writePos];
 
+        System.arraycopy(buffer, 0, b, 0, writePos);
+        writePos = 0;
+        return b;
+    }
     public void read(short[] s) {
 
         System.arraycopy(buffer, 0, s, 0, s.length);

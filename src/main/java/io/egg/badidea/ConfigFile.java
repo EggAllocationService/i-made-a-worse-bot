@@ -9,6 +9,7 @@ public class ConfigFile {
     public String libporcupinePath;
     public String speechNetwork;
     public String guildId;
+    public String mimicUrl;
     public int defaultAudioVolume;
     public int listenTimeoutMs;
     public int silentTimeMs;

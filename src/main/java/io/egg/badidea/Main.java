@@ -1,5 +1,6 @@
 package io.egg.badidea;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,10 +22,10 @@ import io.egg.badidea.mixing.AudioMixer;
 import io.egg.badidea.protocol.TrackScheduler;
 import io.egg.badidea.speakerHandler.SpeakerThread;
 import io.egg.badidea.transcribe.TranscriptionThread;
+import io.egg.badidea.tts.TtsThread;
 import io.egg.badidea.wakeWordHandler.WakeWordThread;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -35,8 +36,10 @@ public class Main {
     public static JDA bot;
     public static TranscriptionThread transcriptionThread;
     public static AudioPlayerManager audioManager;
+    public static TtsThread ttsThread;
     public static Gson gson;
     public static ConfigFile config;
+    public static JoinCodesFile codes;
 
     public static void main(String[] args) throws LoginException, PorcupineException, IOException {
 
@@ -44,8 +47,16 @@ public class Main {
         String p = Files.readString(Path.of("config"));
         config = gson.fromJson(p, ConfigFile.class);
         new WakeWordThread().start();
+        ttsThread = new TtsThread();
+        ttsThread.start();
         transcriptionThread = new TranscriptionThread();
         audioManager = new DefaultAudioPlayerManager();
+        if (!(new File("codes.json")).exists()) {
+            var s_tmp = gson.toJson(new JoinCodesFile());
+            Files.writeString(Path.of("codes.json"), s_tmp);
+        }
+        p = Files.readString(Path.of("codes.json"));
+        codes = gson.fromJson(p, JoinCodesFile.class);
 
         audioManager.getConfiguration().setOutputFormat(StandardAudioDataFormats.DISCORD_PCM_S16_BE);
         AudioSourceManagers.registerRemoteSources(audioManager);
@@ -61,6 +72,9 @@ public class Main {
         CommandManager.registerCommand(new StopCommand());
         CommandManager.registerCommand(new SkipCommand());
         CommandManager.registerCommand(new TranscribeCommand());
+        CommandManager.registerCommand(new SetJoincodeCommand());
+        CommandManager.registerCommand(new SpeechTestCommand());
+        CommandManager.registerCommand(new PlayingCommand());
 
         bot = JDABuilder.createDefault(config.token)
                 .addEventListeners(new MainEventHandler())

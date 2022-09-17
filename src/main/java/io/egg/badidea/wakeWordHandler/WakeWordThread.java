@@ -15,6 +15,7 @@ import io.egg.badidea.Main;
 import io.egg.badidea.micHandler.DefaultRecieveHandler;
 import io.egg.badidea.mixing.AudioMixer;
 import io.egg.badidea.protocol.MicInputStream;
+import io.egg.badidea.transcribe.TranscriptionThread;
 import net.dv8tion.jda.api.entities.User;
 
 public class WakeWordThread extends Thread {
@@ -75,6 +76,10 @@ public class WakeWordThread extends Thread {
                 }
                 User found = results.poll();
                 if(found != null) {
+                    MicInputStream stream = DefaultRecieveHandler.audioStreams.get(found);
+                    if (stream.canProvideLenBytes(320)) {
+                        TranscriptionThread.offerPrerec(stream.getAll());
+                    }
                     System.out.println("Wake word detected from user " + found.getAsTag());
                     if (Main.transcriptionThread.transcribeFromUser == null) {
                         AudioMixer.nowListening();

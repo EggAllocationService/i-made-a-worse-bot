@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import io.egg.badidea.BaseCommand;
 import io.egg.badidea.mixing.AudioMixer;
 import io.egg.badidea.transcribe.TranscriptionThread;
+import io.egg.badidea.tts.*;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -37,7 +38,9 @@ public class StopCommand extends BaseCommand{
     @Override
     public void handleVoiceCommand(String in, Member from) {
         AudioMixer.trackScheduler.stop();
-        AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
+        //AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
+        String speech = random("alright", "okay", "sure") + ", stopping " + random("the song", "playback") + ".";
+        TtsThread.submitJob(new TtsJob(speech, new TtsPlayerHandler()));
     }
     @Override
     public void handleSlashCommand(SlashCommandInteractionEvent event) {

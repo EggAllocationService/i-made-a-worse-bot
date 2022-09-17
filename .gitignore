@@ -18,3 +18,5 @@ config
 libvosk.so
 recorded.pcm
 daanzu/
+
+codes.json

@@ -1,14 +1,9 @@
 package io.egg.badidea.transcribe;
 
-import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +35,7 @@ public class TranscriptionThread extends Thread {
     public static byte[] startNoise;
     public static byte[] successNoise;
     public static byte[] failNoise;
+    public static short[] prerec = new short[0];
     public Recognizer voskRecognizer;
     public static final int[] SILENCE = new int[320];
     public boolean started = false;
@@ -74,6 +70,12 @@ public class TranscriptionThread extends Thread {
             }
             if (transcribeFromUser != null) {
                 if (transcriptionTime == 0) {
+                    if (prerec.length > 0) {
+                        System.arraycopy(prerec, 0, recordBuffer, 0, prerec.length);
+                        index += prerec.length;
+                        prerec = new short[0];
+                    }
+
                     AudioMixer.notificationSink.push(startNoise);
                 }
                 if (!DefaultRecieveHandler.audioStreams.containsKey(transcribeFromUser)
@@ -121,6 +123,13 @@ public class TranscriptionThread extends Thread {
 
         }
     }
+    public static void offerPrerec(short[] data) {
+        if (prerec.length != 0) {
+            System.out.println("WARN: Tried to offer prerecord when it already exists!");
+            return;
+        }
+        prerec = data;
+    }
 
     public int[] shortToInt(short[] in) {
         int[] out = new int[in.length];
@@ -143,6 +152,7 @@ public class TranscriptionThread extends Thread {
         System.out.println("Transcription finished, beginning speech recognition");
         transcriptionTime = 0;
         silentTime = 0;
+        prerec = new short[0];
         var u = transcribeFromUser;
         transcribeFromUser = null;
         started = false;

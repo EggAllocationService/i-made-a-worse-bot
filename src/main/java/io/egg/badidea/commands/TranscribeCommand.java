@@ -33,7 +33,6 @@ public class TranscribeCommand extends BaseCommand {
     @Override
     public void handleVoiceCommand(String in, Member from) {
         var text = Arrays.asList(in.split(" ")).stream().skip(1).collect(Collectors.joining(" "));
-
         var emb = new EmbedBuilder();
         emb.setFooter(from.getUser().getAsTag(), from.getAvatarUrl());
         emb.addField("Transcription Result", "\"" + text + "\"", false);

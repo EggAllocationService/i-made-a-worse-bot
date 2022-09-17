@@ -1,6 +1,7 @@
 package io.egg.badidea;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -46,5 +47,9 @@ public abstract class BaseCommand {
     public void handleSlashCommand(SlashCommandInteractionEvent event) {
         // to implement in subclasses
     }
-
+    public String random(String... options) {
+        var len = options.length;
+        var index = (new Random()).nextInt(len);
+        return options[index];
+    }
 }
