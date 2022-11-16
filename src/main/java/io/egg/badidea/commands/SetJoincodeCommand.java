@@ -47,7 +47,7 @@ public class SetJoincodeCommand extends BaseCommand {
             }
             Main.codes.codes.put(e.getUser().getId(), newCode);
             Main.codes.save();
-            e.getHook().sendMessage(":white_check_mark: Updated your join code").setEphemeral(true).complete();
+            e.getHook().sendMessage("<a:check2:1020363266930790400> Updated your join code").setEphemeral(true).complete();
         }
     }
     

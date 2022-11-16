@@ -19,6 +19,8 @@ import ai.picovoice.porcupine.PorcupineException;
 import io.egg.badidea.commands.*;
 import io.egg.badidea.micHandler.MicThread;
 import io.egg.badidea.mixing.AudioMixer;
+import io.egg.badidea.mixing.DynamicAudioMixer;
+import io.egg.badidea.mixing.WrappedAudioPlayerStream;
 import io.egg.badidea.protocol.TrackScheduler;
 import io.egg.badidea.speakerHandler.SpeakerThread;
 import io.egg.badidea.transcribe.TranscriptionThread;
@@ -40,7 +42,6 @@ public class Main {
     public static Gson gson;
     public static ConfigFile config;
     public static JoinCodesFile codes;
-
     public static void main(String[] args) throws LoginException, PorcupineException, IOException {
 
         gson = new Gson();
@@ -66,6 +67,8 @@ public class Main {
         YoutubeHttpContextFilter.setPAPISID(config.PAPISID);
         YoutubeHttpContextFilter.setPSID(config.PSID);
         AudioMixer.audioPlayer.setVolume(config.defaultAudioVolume);
+        AudioMixer.musicStream = new WrappedAudioPlayerStream(AudioMixer.audioPlayer);
+        DynamicAudioMixer.channels.put("music", AudioMixer.musicStream);
         transcriptionThread.start();
 
         CommandManager.registerCommand(new PlayCommand());
@@ -75,6 +78,8 @@ public class Main {
         CommandManager.registerCommand(new SetJoincodeCommand());
         CommandManager.registerCommand(new SpeechTestCommand());
         CommandManager.registerCommand(new PlayingCommand());
+        CommandManager.registerCommand(new SynthCommand());
+        CommandManager.registerCommand(new VolumeCommand());
 
         bot = JDABuilder.createDefault(config.token)
                 .addEventListeners(new MainEventHandler())

@@ -20,7 +20,7 @@ public class PlayingCommand extends BaseCommand {
 
     @Override
     public boolean shouldHandleVoiceCommand(String in, Member from) {
-        return in.startsWith("what song is this") || in.startsWith("what is this");
+        return in.startsWith("what song is this") || in.startsWith("what is this") || in.startsWith("what's playing") || in.startsWith("what is playing");
     }
 
     @Override
@@ -32,7 +32,7 @@ public class PlayingCommand extends BaseCommand {
         } else {
             var name = c.getInfo().title;
             var author = c.getInfo().author;
-            speech = random("the current song is", " this song is called", "it is", "this is") + " " + name + " by " + author + ".";
+            speech = random("the current song is", "this song is called", "this is", "this is called") + " " + name + ", by " + author + ".";
         }
         
 

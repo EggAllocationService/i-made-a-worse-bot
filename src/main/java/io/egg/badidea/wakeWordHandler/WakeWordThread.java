@@ -14,6 +14,7 @@ import ai.picovoice.porcupine.PorcupineException;
 import io.egg.badidea.Main;
 import io.egg.badidea.micHandler.DefaultRecieveHandler;
 import io.egg.badidea.mixing.AudioMixer;
+import io.egg.badidea.mixing.DynamicAudioMixer;
 import io.egg.badidea.protocol.MicInputStream;
 import io.egg.badidea.transcribe.TranscriptionThread;
 import net.dv8tion.jda.api.entities.User;
@@ -82,7 +83,7 @@ public class WakeWordThread extends Thread {
                     }
                     System.out.println("Wake word detected from user " + found.getAsTag());
                     if (Main.transcriptionThread.transcribeFromUser == null) {
-                        AudioMixer.nowListening();
+                        AudioMixer.musicStream.setVolume(10);
                      Main.transcriptionThread.beginTranscription(found);
                     }
                     
@@ -143,7 +144,6 @@ public class WakeWordThread extends Thread {
                     .setAccessKey(Main.config.picoToken)
                     .build();
         } catch (PorcupineException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         }

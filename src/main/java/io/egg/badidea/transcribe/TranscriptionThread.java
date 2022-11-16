@@ -202,8 +202,8 @@ public class TranscriptionThread extends Thread {
             System.out.println("WARN: Could not find guild for member " + u.getAsTag());
         }
         System.out.println(s);
-        AudioMixer.stopListening();
         CommandManager.handleVoiceCommand(b.text, resolved);
+        AudioMixer.musicStream.setVolume(100);
     }
 
     public class Bullshit {

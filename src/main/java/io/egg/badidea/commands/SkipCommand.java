@@ -6,6 +6,9 @@ import java.util.concurrent.TimeUnit;
 import io.egg.badidea.BaseCommand;
 import io.egg.badidea.mixing.AudioMixer;
 import io.egg.badidea.transcribe.TranscriptionThread;
+import io.egg.badidea.tts.TtsJob;
+import io.egg.badidea.tts.TtsPlayerHandler;
+import io.egg.badidea.tts.TtsThread;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -37,12 +40,13 @@ public class SkipCommand extends BaseCommand{
     @Override
     public void handleVoiceCommand(String in, Member from) {
         AudioMixer.trackScheduler.nextTrack();
-        AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
+        String speech = random("alright", "okay", "sure") + ", skipping " + random("this song", "to the next track") + ".";
+        TtsThread.submitJob(new TtsJob(speech, new TtsPlayerHandler()));
     }
     @Override
     public void handleSlashCommand(SlashCommandInteractionEvent event) {
         AudioMixer.trackScheduler.nextTrack();
-        event.reply(":white_check_mark: Skipped").complete();
+        event.reply("<a:check2:1020363266930790400> Skipped").complete();
         event.getHook().deleteOriginal().queueAfter(4, TimeUnit.SECONDS);
 
     }

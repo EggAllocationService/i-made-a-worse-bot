@@ -29,9 +29,13 @@ public class TtsThread extends Thread {
                 // at least one job to do
                 // so get first and run job
                 TtsJob job = queue.remove(0);
+                String toGen = "<speak lang=\"en\"><voice name=\"en_US/vctk_low#48\"><prosody rate=\"1.2\">"
+                    + job.toGenerate
+                    +"</prosody></voice></speak>";
                 HttpRequest req = HttpRequest.newBuilder()
                     .uri(URI.create(Main.config.mimicUrl))
-                    .POST(BodyPublishers.ofString(job.toGenerate))
+                    .POST(BodyPublishers.ofString(toGen))
+                    .header("content-type", "application/ssml+xml")
                     .build();
                 try {
                     var response = client.send(req, BodyHandlers.ofByteArray());

@@ -7,9 +7,6 @@ import io.egg.badidea.BaseCommand;
 import io.egg.badidea.Main;
 import io.egg.badidea.mixing.AudioMixer;
 import io.egg.badidea.transcribe.TranscriptionThread;
-import io.egg.badidea.tts.TtsJob;
-import io.egg.badidea.tts.TtsPlayerHandler;
-import io.egg.badidea.tts.TtsThread;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -66,13 +63,6 @@ public class PlayCommand extends BaseCommand {
             var name = c.getInfo().title;
             var author = c.getInfo().author;
             AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
-           /*  if (AudioMixer.trackScheduler.queue.size() == 0) {
-                // meaning nothing was added to queue
-               String speech = random("alright", "okay", "sure") + ", playing " + name + " by " + author + ".";
-                TtsThread.submitJob(new TtsJob(speech, new TtsPlayerHandler()));
-            } else {
-                AudioMixer.notificationSink.push(TranscriptionThread.successNoise)
-            }*/
         }));
     }
     @Override
@@ -88,7 +78,7 @@ public class PlayCommand extends BaseCommand {
             if (c == null) {
                 event.getHook().sendMessage(":x: There was an error queueing that track.").complete();
             } else {
-                event.getHook().sendMessage(":white_check_mark: Queued **" + c.getInfo().title + "**").complete();
+                event.getHook().sendMessage("<a:check2:1020363266930790400> Queued **" + c.getInfo().title + "**").complete();
             }
             
             event.getHook().deleteOriginal().queueAfter(4, TimeUnit.SECONDS);

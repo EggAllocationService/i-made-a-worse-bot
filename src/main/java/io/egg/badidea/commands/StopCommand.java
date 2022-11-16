@@ -39,13 +39,14 @@ public class StopCommand extends BaseCommand{
     public void handleVoiceCommand(String in, Member from) {
         AudioMixer.trackScheduler.stop();
         //AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
-        String speech = random("alright", "okay", "sure") + ", stopping " + random("the song", "playback") + ".";
-        TtsThread.submitJob(new TtsJob(speech, new TtsPlayerHandler()));
+        /*String speech = random("alright", "okay", "sure") + ", stopping " + random("the song", "playback") + ".";
+        TtsThread.submitJob(new TtsJob(speech, new TtsPlayerHandler()));*/
+        AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
     }
     @Override
     public void handleSlashCommand(SlashCommandInteractionEvent event) {
         AudioMixer.trackScheduler.stop();
-        event.reply(":white_check_mark: Stopped playing!").complete();
+        event.reply("<a:check2:1020363266930790400> Stopped playing!").complete();
         event.getHook().deleteOriginal().queueAfter(4, TimeUnit.SECONDS);
 
     }
