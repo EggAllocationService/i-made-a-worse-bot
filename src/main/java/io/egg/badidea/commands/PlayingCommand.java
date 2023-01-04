@@ -34,11 +34,7 @@ public class PlayingCommand extends BaseCommand {
             var author = c.getInfo().author;
             speech = random("the current song is", "this song is called", "this is", "this is called") + " " + name + ", by " + author + ".";
         }
-        
 
         TtsThread.submitJob(new TtsJob(speech, new TtsPlayerHandler()));
-
-        // TtsThread.submitJob(new TtsJob("my speech subsystem is fully functional,
-        // hello " + from.getEffectiveName().toLowerCase(), new TtsPlayerHandler()));
     }
 }

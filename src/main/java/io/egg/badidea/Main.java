@@ -75,7 +75,6 @@ public class Main {
         CommandManager.registerCommand(new StopCommand());
         CommandManager.registerCommand(new SkipCommand());
         CommandManager.registerCommand(new TranscribeCommand());
-        CommandManager.registerCommand(new SetJoincodeCommand());
         CommandManager.registerCommand(new SpeechTestCommand());
         CommandManager.registerCommand(new PlayingCommand());
         CommandManager.registerCommand(new SynthCommand());

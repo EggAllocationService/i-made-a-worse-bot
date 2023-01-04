@@ -16,7 +16,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 public class SkipCommand extends BaseCommand{
     public SkipCommand() {
         super("skip");
-
     }
 
     @Override
@@ -40,8 +39,9 @@ public class SkipCommand extends BaseCommand{
     @Override
     public void handleVoiceCommand(String in, Member from) {
         AudioMixer.trackScheduler.nextTrack();
-        String speech = random("alright", "okay", "sure") + ", skipping " + random("this song", "to the next track") + ".";
-        TtsThread.submitJob(new TtsJob(speech, new TtsPlayerHandler()));
+        AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
+        /*String speech = random("alright", "okay", "sure") + ", skipping " + random("this song", "to the next track") + ".";
+        TtsThread.submitJob(new TtsJob(speech, new TtsPlayerHandler()));*/
     }
     @Override
     public void handleSlashCommand(SlashCommandInteractionEvent event) {

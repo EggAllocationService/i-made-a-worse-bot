@@ -28,7 +28,7 @@ public class VolumeCommand extends BaseCommand {
     @Override
     protected ArrayList<OptionData> createSlashOptions() {
         var things = new ArrayList<OptionData>();
-        things.add(new OptionData(OptionType.INTEGER, "volume", "Speech to synthesise").setRequired(true).setRequiredRange(1, 100));
+        things.add(new OptionData(OptionType.INTEGER, "volume", "New volume for the bot").setRequired(true).setRequiredRange(1, 100));
 
         return things;
     }

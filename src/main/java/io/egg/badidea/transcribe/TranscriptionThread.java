@@ -77,6 +77,7 @@ public class TranscriptionThread extends Thread {
                     }
 
                     AudioMixer.notificationSink.push(startNoise);
+                    silentTime = 0;
                 }
                 if (!DefaultRecieveHandler.audioStreams.containsKey(transcribeFromUser)
                         || DefaultRecieveHandler.audioStreams.get(transcribeFromUser) == null) {
@@ -154,36 +155,20 @@ public class TranscriptionThread extends Thread {
         silentTime = 0;
         prerec = new short[0];
         var u = transcribeFromUser;
-        transcribeFromUser = null;
+        
         started = false;
         startCount = 0;
         AudioMixer.notificationSink.push(TranscriptionThread.ackNoise);
         short[] data = new short[index];
         System.arraycopy(recordBuffer, 0, data, 0, index);
-      
-      /*   try {
-            OutputStream stream;
-            if (new File("recorded.pcm").exists()) {
-                stream = Files.newOutputStream(Path.of("recorded.pcm"), StandardOpenOption.TRUNCATE_EXISTING);
-            } else {
-                stream = Files.newOutputStream(Path.of("recorded.pcm"), StandardOpenOption.CREATE);
-            }
-            var datastream = new DataOutputStream(stream);
-            for (short s : data) {
-                datastream.writeShort(s);
-            }  
-            datastream.flush();
-            datastream.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
         index = 0;
         System.out.println(voskRecognizer.acceptWaveForm(data, data.length));
         
         String s = voskRecognizer.getFinalResult();
         Bullshit b = g.fromJson(s, Bullshit.class);
         voskRecognizer.reset();
+        transcribeFromUser = null;
+
         Member resolved = null;
         List<User> audioUsers;
         for (AudioManager a : Main.bot.getAudioManagers()) {
@@ -197,13 +182,15 @@ public class TranscriptionThread extends Thread {
             }
 
         }
-        ;
+        final Member r = resolved;
         if (resolved == null) {
             System.out.println("WARN: Could not find guild for member " + u.getAsTag());
         }
         System.out.println(s);
-        CommandManager.handleVoiceCommand(b.text, resolved);
-        AudioMixer.musicStream.setVolume(100);
+        new Thread(() -> {
+            CommandManager.handleVoiceCommand(b.text, r);
+            AudioMixer.musicStream.setVolume(100);
+        }).start();
     }
 
     public class Bullshit {
