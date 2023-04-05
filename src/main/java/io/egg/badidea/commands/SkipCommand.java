@@ -40,8 +40,6 @@ public class SkipCommand extends BaseCommand{
     public void handleVoiceCommand(String in, Member from) {
         AudioMixer.trackScheduler.nextTrack();
         AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
-        /*String speech = random("alright", "okay", "sure") + ", skipping " + random("this song", "to the next track") + ".";
-        TtsThread.submitJob(new TtsJob(speech, new TtsPlayerHandler()));*/
     }
     @Override
     public void handleSlashCommand(SlashCommandInteractionEvent event) {

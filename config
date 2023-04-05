@@ -1,0 +1,16 @@
+{
+        "token": "OTcyNjM3NzE4Mjc2MzQxODIw.Ynb9dg.k6g9xAwavNSVqxk1AqvkZqK5ly0",
+        "picoToken": "ehVVovMRcC2WTepHDOeWOWHBlPWGyc3qMQm4HEgUckGc5iaaLHAzFw==",
+        "PSID": "",    
+        "PAPISID": "",
+        "wakeWord": "/home/ubuntu/i-made-a-worse-bot/hey_bot.ppn",
+        "libporqupinePath": "/home/ubuntu/porcupine-aarch64.so",
+        "speechNetwork": "vosk-eng-huge",
+        "libcobraPath": "/home/ubuntu/cobra_armv8a.so",
+        "mimicUrl": "http://127.0.0.1:59125/api/tts?noiseScale=0.667&noiseW=0.6&lengthScale=1.2",
+        "guildId": "84042900147854823",
+        "audioFrameSizeMs": "20",
+        "defaultAudioVolume": 50,
+        "listenTimeoutMs": 8000,
+        "silentTimeMs": 600
+}

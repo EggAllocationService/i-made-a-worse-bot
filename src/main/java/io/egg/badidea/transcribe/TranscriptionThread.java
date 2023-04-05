@@ -57,6 +57,7 @@ public class TranscriptionThread extends Thread {
 
         p = Paths.get("fail_be.pcm");
         failNoise = Files.readAllBytes(p);
+        
     }
 
     @Override

@@ -79,11 +79,12 @@ public class Main {
         CommandManager.registerCommand(new PlayingCommand());
         CommandManager.registerCommand(new SynthCommand());
         CommandManager.registerCommand(new VolumeCommand());
+        CommandManager.registerCommand(new QueueCommand());
 
         bot = JDABuilder.createDefault(config.token)
                 .addEventListeners(new MainEventHandler())
                 .setEnabledIntents(EnumSet.allOf(GatewayIntent.class))
-                .enableCache(CacheFlag.VOICE_STATE)
+                .enableCache(CacheFlag.VOICE_STATE, CacheFlag.ACTIVITY, CacheFlag.ONLINE_STATUS)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .setActivity(null)
                 .build();

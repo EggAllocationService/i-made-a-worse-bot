@@ -31,18 +31,21 @@ public class WakeWordThread extends Thread {
 
     @Override
     public void run() {
+        System.out.println("Wake word thread started");
         while (running) {
             try {
                 DefaultRecieveHandler.lock();
                 var start = Instant.now();
                 var futures = new ArrayList<Future<?>>();
                 ConcurrentLinkedQueue<User> results = new ConcurrentLinkedQueue<>();
+                
                 for (User u : DefaultRecieveHandler.audioStreams.keySet()) {
                     if (Main.transcriptionThread.transcribeFromUser != null
                             && Main.transcriptionThread.transcribeFromUser.equals(u)) {
                         continue;
                     }
                     if (!wakeWordMap.containsKey(u) || wakeWordMap.get(u) == null) {
+                        System.out.println("Creating a Porcqupine listener for " + u.getAsTag() + "...");
                         wakeWordMap.put(u, createPorcupine());
                         System.out.println("Created a Porcqupine listener for " + u.getAsTag());
 
@@ -72,9 +75,19 @@ public class WakeWordThread extends Thread {
 
                   
                 }
-                for (var u : futures) {
-                    u.get();
+                
+                while(true) {
+                    var allAreDone = true;
+                    for (var f : futures) {
+                        if (f.isDone() && results.size() > 0) {
+                            break;
+                        } else if (!f.isDone()) {
+                            allAreDone = false;
+                        }
+                    }
+                    if (allAreDone) break;
                 }
+            
                 User found = results.poll();
                 if(found != null) {
                     MicInputStream stream = DefaultRecieveHandler.audioStreams.get(found);
@@ -86,8 +99,8 @@ public class WakeWordThread extends Thread {
                         AudioMixer.musicStream.setVolume(10);
                      Main.transcriptionThread.beginTranscription(found);
                     }
-                    
                 }
+                
                 futures.clear();
                 results.clear();
                 DefaultRecieveHandler.unlock();
@@ -110,7 +123,7 @@ public class WakeWordThread extends Thread {
             }
 
         }
-
+        System.out.println("Wake word thread exiting");
     }
 
     public static void userDisconnect(User u) {

@@ -27,11 +27,11 @@ public class SynthCommand extends BaseCommand{
     }
     @Override
     public void handleSlashCommand(SlashCommandInteractionEvent e) {
-        e.deferReply().complete();
+        e.reply("This command is currently broken get fucked nerd").setEphemeral(true).complete();
         var speech = e.getOption("speech").getAsString();
-        TtsThread.submitJob(new TtsJob(speech, bytes -> {
+        /*TtsThread.submitJob(new TtsJob(speech, bytes -> {
            e.getHook().editOriginal(bytes, "generated.wav").queue();
-        }));
+        }));*/
     }
     
 }

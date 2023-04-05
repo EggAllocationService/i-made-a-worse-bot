@@ -60,8 +60,7 @@ public class PlayCommand extends BaseCommand {
         }
         System.out.println("searching youtube for " + text);
         Main.audioManager.loadItem(start + text , new LoadHandler(c -> {
-            var name = c.getInfo().title;
-            var author = c.getInfo().author;
+            c.setUserData("[" + from.getUser().getAsTag() + "]");
             AudioMixer.notificationSink.push(TranscriptionThread.successNoise);
         }));
     }
@@ -79,6 +78,7 @@ public class PlayCommand extends BaseCommand {
                 event.getHook().sendMessage(":x: There was an error queueing that track.").complete();
             } else {
                 event.getHook().sendMessage("<a:check2:1020363266930790400> Queued **" + c.getInfo().title + "**").complete();
+                c.setUserData("[" + event.getUser().getAsTag() + "]");
             }
             
             event.getHook().deleteOriginal().queueAfter(4, TimeUnit.SECONDS);
